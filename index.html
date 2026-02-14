@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Digital Time Capsule</title>
+</head>
+<body>
+  <h1>Digital Time Capsule</h1>
+
+  <h2>Create Your Capsule</h2>
+  <form action="/create" method="POST">
+    <textarea name="message" placeholder="Write your message..." required></textarea><br><br>
+    <input type="datetime-local" name="unlockDate" required><br><br>
+    <button type="submit">Create Capsule</button>
+  </form>
+
+  <h2>Unlocked Capsules</h2>
+  <ul id="capsules"></ul>
+
+  <script>
+    async function loadCapsules() {
+      const res = await fetch('/unlocked');
+      const capsules = await res.json();
+      const ul = document.getElementById('capsules');
+      ul.innerHTML = '';
+      capsules.forEach(c => {
+        const li = document.createElement('li');
+        li.innerText = `${c.message} (Unlocked on ${new Date(c.unlockDate).toLocaleString()})`;
+        ul.appendChild(li);
+      });
+    }
+    loadCapsules();
+    setInterval(loadCapsules, 60000); 
+  </script>
+</body>
+</html>
